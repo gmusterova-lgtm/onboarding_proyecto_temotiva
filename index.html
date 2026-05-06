@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onboarding Temotiva</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f5f5f7;
+            --text-color: #1d1d1f;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --dock-bg: rgba(255, 255, 255, 0.45);
+            --accent-color: #0071e3;
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            --card-border: rgba(255, 255, 255, 0.6);
+            --dock-border: rgba(255, 255, 255, 0.5);
+            --secondary-text: #86868b;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #000000;
+                --text-color: #f5f5f7;
+                --card-bg: rgba(28, 28, 30, 0.7);
+                --dock-bg: rgba(40, 40, 40, 0.45);
+                --accent-color: #0a84ff;
+                --shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+                --card-border: rgba(255, 255, 255, 0.1);
+                --dock-border: rgba(255, 255, 255, 0.15);
+                --secondary-text: #a1a1a6;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- macOS Dock Effect --- */
+        .dock-container {
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: auto;
+            max-width: 95%;
+        }
+
+        .dock {
+            display: flex;
+            align-items: center;
+            background: var(--dock-bg);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border-radius: 100px;
+            padding: 8px 12px;
+            border: 1px solid var(--dock-border);
+            box-shadow: var(--shadow), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+            gap: 4px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .dock::-webkit-scrollbar {
+            display: none;
+        }
+
+        .dock-item {
+            position: relative;
+            background: transparent;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 100px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-color);
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dock-item:hover {
+            background: rgba(150, 150, 150, 0.15);
+            transform: scale(1.08) translateY(-2px);
+            margin: 0 4px;
+        }
+
+        .dock-item::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background-color: var(--text-color);
+            opacity: 0;
+            transition: opacity 0.3s, bottom 0.3s;
+        }
+
+        .dock-item.active {
+            font-weight: 600;
+        }
+
+        .dock-item.active::after {
+            opacity: 1;
+            bottom: -2px;
+        }
+
+        /* --- Content Area --- */
+        main {
+            padding: 130px 20px 80px;
+            max-width: 840px;
+            margin: 0 auto;
+        }
+
+        .module-content {
+            animation: fadeIn 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        .module-content h1 {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            text-align: center;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--text-color), var(--secondary-text));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px) saturate(150%);
+            -webkit-backdrop-filter: blur(20px) saturate(150%);
+            border-radius: 24px;
+            padding: 32px;
+            margin-bottom: 24px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+        }
+
+        .card h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card h3 {
+            font-size: 17px;
+            font-weight: 600;
+            margin-top: 24px;
+            margin-bottom: 12px;
+            color: var(--text-color);
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 8px;
+        }
+
+        .card p, .card li {
+            font-size: 15px;
+            color: var(--secondary-text);
+            margin-bottom: 12px;
+        }
+
+        .card ol, .card ul {
+            margin-left: 24px;
+            margin-top: 10px;
+        }
+
+        .card li {
+            margin-bottom: 6px;
+        }
+
+        .footer-msg {
+            text-align: center;
+            margin-top: 60px;
+            font-size: 18px;
+            color: var(--text-color);
+        }
+
+        /* --- Technical Elements (Tables, Code, Badges, Errors) --- */
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 16px;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+            background: rgba(0,0,0,0.01);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--card-border);
+            color: var(--secondary-text);
+        }
+
+        th {
+            background: rgba(0,0,0,0.03);
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .table-container { background: rgba(255,255,255,0.01); }
+            th { background: rgba(255,255,255,0.04); }
+        }
+
+        tr:last-child td { border-bottom: none; }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge-prod { background: rgba(52, 199, 89, 0.15); color: #28a745; }
+        .badge-dev { background: rgba(0, 113, 227, 0.15); color: var(--accent-color); }
+        .badge-auto { background: rgba(255, 149, 0, 0.15); color: #ff9500; }
+
+        pre {
+            background: rgba(0,0,0,0.04);
+            padding: 16px;
+            border-radius: 12px;
+            overflow-x: auto;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 13px;
+            color: var(--text-color);
+            border: 1px solid var(--card-border);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            pre { background: rgba(255,255,255,0.05); }
+        }
+
+        code.inline {
+            background: rgba(0,0,0,0.06);
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-family: 'SF Mono', monospace;
+            font-size: 13px;
+            color: var(--accent-color);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            code.inline { background: rgba(255,255,255,0.1); }
+        }
+
+        .comment { color: #86868b; }
+
+        .error-block {
+            border: 1px solid rgba(255, 59, 48, 0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 16px;
+            background: rgba(255, 59, 48, 0.03);
+        }
+        .error-header {
+            background: rgba(255, 59, 48, 0.1);
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #d70015;
+            font-family: 'SF Mono', monospace;
+        }
+        @media (prefers-color-scheme: dark) { .error-header { color: #ff453a; } }
+        .error-body {
+            padding: 16px;
+            font-size: 14px;
+            color: var(--text-color);
+        }
+        .error-body pre {
+            margin-top: 12px;
+            margin-bottom: 0;
+            border: none;
+            background: rgba(0,0,0,0.05);
+        }
+
+        /* --- Nuevos estilos para Links y Pasos (Junior Friendly) --- */
+        .repo-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 113, 227, 0.1);
+            color: var(--accent-color);
+            padding: 10px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.2s;
+            margin: 8px 0 20px 0;
+            border: 1px solid rgba(0, 113, 227, 0.2);
+        }
+        .repo-link:hover {
+            background: rgba(0, 113, 227, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 113, 227, 0.15);
+        }
+        @media (prefers-color-scheme: dark) {
+            .repo-link {
+                background: rgba(10, 132, 255, 0.15);
+                color: #5ac8fa;
+                border-color: rgba(10, 132, 255, 0.3);
+            }
+            .repo-link:hover { background: rgba(10, 132, 255, 0.25); }
+        }
+
+        .step-box {
+            background: rgba(0,0,0,0.02);
+            border-left: 4px solid var(--accent-color);
+            padding: 16px 20px;
+            border-radius: 0 12px 12px 0;
+            margin-bottom: 16px;
+        }
+        @media (prefers-color-scheme: dark) {
+            .step-box { background: rgba(255,255,255,0.03); }
+        }
+        .step-box h4 {
+            margin-bottom: 8px;
+            color: var(--text-color);
+        }
+        .step-box p { margin-bottom: 10px; font-size: 14px; }
+
+        /* --- Modern "Próximamente" State --- */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 60px 20px;
+            min-height: 50vh;
+            background: var(--card-bg);
+            border-radius: 32px;
+            border: 1px solid var(--card-border);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .empty-state::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--accent-color) 0%, transparent 70%);
+            opacity: 0.1;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .empty-icon {
+            font-size: 72px;
+            margin-bottom: 24px;
+            z-index: 1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .empty-state h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            z-index: 1;
+            color: var(--text-color);
+        }
+
+        .empty-state p {
+            font-size: 18px;
+            color: var(--secondary-text);
+            max-width: 450px;
+            margin-bottom: 32px;
+            z-index: 1;
+        }
+
+        .btn-return {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 100px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 1;
+            box-shadow: 0 4px 15px rgba(0, 113, 227, 0.3);
+        }
+
+        .btn-return:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 20px rgba(0, 113, 227, 0.4);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @media (max-width: 768px) {
+            .module-content h1 { font-size: 32px; }
+            .dock-container { top: 12px; }
+            .dock { padding: 6px; border-radius: 20px; }
+            .dock-item { padding: 8px 12px; font-size: 12px; }
+            .dock-item:hover { transform: none; margin: 0; }
+            main { padding-top: 100px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="dock-container">
+        <div class="dock">
+            <button class="dock-item active" onclick="showModule('general')">GENERAL</button>
+            <button class="dock-item" onclick="showModule('app')">APP</button>
+            <button class="dock-item" onclick="showModule('web')">WEB</button>
+            <button class="dock-item" onclick="showModule('diseno')">DISEÑO</button>
+            <button class="dock-item" onclick="showModule('ciberseguridad')">CIBERSEGURIDAD</button>
+            <button class="dock-item" onclick="showModule('psicologia')">PSICOLOGÍA</button>
+            <button class="dock-item" onclick="showModule('finanzas')">FINANZAS</button>
+            <button class="dock-item" onclick="showModule('legal')">LEGAL</button>
+            <button class="dock-item" onclick="showModule('marketing')">MARKETING</button>
+            <button class="dock-item" onclick="showModule('producto')">PRODUCTO</button>
+            <button class="dock-item" onclick="showModule('inversiones')">INVERSIONES</button>
+            <button class="dock-item" onclick="showModule('practicas')">PRÁCTICAS</button>
+        </div>
+    </nav>
+
+    <main id="content-area">
+        <!-- ================= MÓDULO GENERAL ================= -->
+        <section id="general" class="module-content">
+            <h1>ONBOARDING GENERAL</h1>
+
+            <div class="card">
+                <h2>👋 BIENVENID@</h2>
+                <p>Bienvenida/o a Temotiva. Este documento es para que cualquier persona que se incorpore al equipo entienda rápido dónde entra, cómo trabajamos y qué tiene que hacer durante sus primeros días.</p>
+                <p>La idea no es que memorices todo, sino que tengas una guía clara para empezar con orden, preguntar mejor y aportar valor cuanto antes.</p>
+                <p><strong>Temotiva es un proyecto de bienestar emocional preventivo.</strong> Combinamos app, psicología aplicada, IA, talleres, investigación, comunidad y producto digital para ayudar a las personas a cuidarse mejor en su vida cotidiana.</p>
+            </div>
+
+            <div class="card">
+                <h2>1. Entiende el proyecto antes de empezar</h2>
+                <p>Antes de tocar una tarea concreta, entiende qué estamos construyendo. Temotiva no es solo una app. Es un proyecto en crecimiento, con usuarios reales, validación en marcha, talleres, datos, decisiones de producto y una visión clara: ayudar a las personas a identificar cómo se sienten, anticipar señales de malestar y desarrollar hábitos de autocuidado.</p>
+            </div>
+
+            <div class="card">
+                <h2>2. Ubícate en tu área</h2>
+                <p>Este documento es general. Sirve para todas las personas que entran en Temotiva, pero no sustituye la documentación específica de cada área.</p>
+                <p>Después de leerlo, navega en el menú superior a la pestaña que corresponda a tu rol. Ahí encontrarás las tareas, procesos, criterios, responsables, herramientas y materiales propios de tu área. Si no sabes cuál es tu pestaña, no improvises. Pregunta primero a tu responsable directo.</p>
+            </div>
+
+            <div class="card">
+                <h2>3. Ten claro tu rol</h2>
+                <p>Al entrar, necesitas saber tres cosas básicas: qué rol ocupas, qué se espera de ti y quién revisa tu trabajo. No empieces tareas sueltas sin saber para qué sirven.</p>
+                <p>Primero confirma cuál es tu prioridad, qué resultado se espera y cómo debes reportarlo. En Temotiva valoramos la autonomía, pero la autonomía no significa ir por libre. Significa entender el objetivo, avanzar con criterio y comunicar bien.</p>
+            </div>
+
+            <div class="card">
+                <h2>4. Revisa tus accesos</h2>
+                <p>Comprueba que tienes acceso a las herramientas necesarias para tu trabajo, y solo a las necesarias (Discord, Notion, Drive, GitHub, etc.). Si te falta un acceso, pídelo indicando qué herramienta necesitas, para qué tarea concreta y si es urgente. No pidas accesos "por si acaso".</p>
+            </div>
+
+            <div class="card">
+                <h2>5. Trabaja con mentalidad de startup</h2>
+                <p>Temotiva está creciendo, así que no todo estará perfecto, cerrado o documentado desde el primer día. Aquí necesitamos personas que sepan avanzar con lo que hay, ordenar lo que falta, avisar cuando algo bloquea y proponer soluciones razonables.</p>
+            </div>
+
+            <div class="card">
+                <h2>6. Comunica</h2>
+                <p>Comunicar bien no significa escribir mucho. Significa que la otra persona entienda rápido qué pasa. Cuando reportes avances, deja claro qué hiciste, qué resultado hubo, qué queda pendiente, qué problema encontraste y cuál es el siguiente paso.</p>
+                <p>Si estás bloqueada/o, dilo pronto. Un bloqueo comunicado a tiempo se puede resolver; un bloqueo oculto retrasa al equipo.</p>
+            </div>
+
+            <div class="card">
+                <h2>7. Documenta lo importante</h2>
+                <p>En Temotiva, documentar también es trabajar. Si haces un proceso, cambias algo, detectas un error o aprendes algo útil, déjalo escrito. La documentación no tiene que ser perfecta, pero sí permitir que otra persona entienda el proceso. Un proyecto crece mejor cuando el conocimiento no se queda solo en una cabeza.</p>
+            </div>
+
+            <div class="card">
+                <h2>8. Entrega trabajo revisable</h2>
+                <p>Todo lo que entregues debe poder revisarse. Antes de decir que una tarea está terminada, comprueba que se entiende, tiene sentido, está ordenada y otra persona podría continuar desde ahí. No buscamos perfeccionismo puro, buscamos trabajo útil, claro y mejorable.</p>
+            </div>
+
+            <div class="card">
+                <h2>9. Pide ayuda de forma responsable</h2>
+                <p>Pedir ayuda está bien. Lo que no ayuda es preguntar sin contexto. Antes de preguntar, revisa la documentación disponible, mensajes anteriores y ejemplos. Cuando preguntes, explica qué intentabas hacer, qué probaste, dónde te bloqueaste y qué necesitas exactamente.</p>
+            </div>
+
+            <div class="card">
+                <h2>10. Cuida la información interna</h2>
+                <p>Durante tu participación tendrás acceso a información interna. No compartas fuera del equipo documentos, datos, accesos, estrategias, conversaciones ni materiales no publicados sin autorización. La confianza es parte del trabajo.</p>
+            </div>
+
+            <div class="card">
+                <h2>11. Recibe feedback y aplícalo</h2>
+                <p>En una startup se corrige, se ajusta y se mejora constantemente. Puede que se te pidan cambios o mejoras. No es algo personal, es parte de construir un buen producto. Recibir feedback, entenderlo y aplicarlo rápido es una habilidad muy valiosa.</p>
+            </div>
+
+            <div class="card">
+                <h2>12. Qué hacer durante tus primeros días</h2>
+                <ol>
+                    <li>Lee este onboarding completo.</li>
+                    <li>Entra en tu área correspondiente.</li>
+                    <li>Identifica a tu responsable directo.</li>
+                    <li>Revisa tus tareas iniciales.</li>
+                    <li>Confirma que tienes los accesos necesarios.</li>
+                    <li>Empieza por tareas pequeñas y bien documentadas.</li>
+                    <li>Reporta avances, dudas y bloqueos ordenadamente.</li>
+                </ol>
+            </div>
+
+            <p class="footer-msg"><strong>GRACIAS POR SUMARTE A TEMOTIVA 🙂</strong></p>
+        </section>
+
+        <!-- ================= MÓDULO APP ================= -->
+        <section id="app" class="module-content hidden">
+            <h1>DESARROLLO DE APP</h1>
+
+            <div class="card">
+                <h2>📱 Repositorio y Ramas (Mobile)</h2>
+                <p>Bienvenido al equipo Mobile. Aquí construimos la aplicación de Temotiva usando <strong>React Native</strong> y <strong>Expo</strong>. Todo el código fuente vive en nuestro repositorio oficial de GitHub:</p>
+                
+                <a href="https://github.com/TEMOTIVA-REACT/Temotiva-React" target="_blank" class="repo-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+                    Ir al Repositorio de la App
+                </a>
+
+                <p><strong>¿Cómo nos organizamos? (Las Ramas)</strong><br>
+                En este proyecto conviven la app y el backend. Para no chocar entre nosotros, hacemos "ramas" (copias) del código:</p>
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>Rama</th><th>Para qué sirve</th><th>Regla de oro</th></tr></thead>
+                        <tbody>
+                            <tr><td><code class="inline">main</code></td><td>Es la app real que descargan los usuarios en sus teléfonos.</td><td><span class="badge badge-prod">Producción</span></td></tr>
+                            <tr><td><code class="inline">dev</code></td><td>El espacio general de la app. Aquí juntamos el código de todos.</td><td><span class="badge badge-dev">Saca tu copia desde aquí</span></td></tr>
+                            <tr><td><code class="inline">backend</code></td><td>El servidor real conectado al VPS.</td><td><span class="badge badge-prod">Producción</span></td></tr>
+                            <tr><td><code class="inline">backend-dev</code></td><td>El servidor local que usaremos para que la app funcione en tu PC.</td><td><span class="badge badge-dev">Modo Desarrollo</span></td></tr>
+                            <tr><td><code class="inline">feature/*</code></td><td>Aquí programas tus nuevas tareas (Ej. <code class="inline">feature/boton-perfil</code>).</td><td><span class="badge badge-dev">Rama de Trabajo</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📋 Reglas de Oro del Equipo</h2>
+                <p>Para mantener el orden y no romper nada en producción, todos seguimos estas reglas:</p>
+                <ul>
+                    <li><strong>Nunca hagas push directo</strong> a las ramas principales (<code class="inline">main</code> o <code class="inline">backend</code>). Siempre trabaja en tu rama y abre un Pull Request (PR).</li>
+                    <li><strong>Nombres de ramas:</strong> Usa prefijos claros como <code class="inline">feature/nombre-de-tarea</code> o <code class="inline">fix/nombre-del-error</code>.</li>
+                    <li><strong>Actualízate siempre:</strong> Antes de abrir un PR, asegúrate de actualizar tu rama con la base (<code class="inline">git pull origin dev</code>) para resolver conflictos.</li>
+                    <li><strong>El Backend es compartido:</strong> Recuerda que si cambias algo en la base de datos del backend, afectará a tus compañeros que desarrollan la Web.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>⚙️ Stack Técnico (Las herramientas de código)</h2>
+                <p>Si eres Junior, no te asustes por los nombres. Aquí te explicamos el ecosistema (Versión 1.0):</p>
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>Tecnología</th><th>Versión</th><th>¿En lenguaje humano, qué es?</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>React Native</strong></td><td>0.81.5</td><td>Permite crear la app para Android y iPhone con un solo código.</td></tr>
+                            <tr><td><strong>Expo & Expo Router</strong></td><td>v54 / v6</td><td>Nos da acceso al GPS, cámara, etc., y maneja la navegación entre pantallas.</td></tr>
+                            <tr><td><strong>TypeScript</strong></td><td>5.9</td><td>JavaScript estricto. Nos avisa de errores antes de probar la app.</td></tr>
+                            <tr><td><strong>NativeWind</strong></td><td>4.x</td><td>Para diseñar rápido usando clases tipo Tailwind (ej. <code class="inline">bg-blue-500</code>).</td></tr>
+                            <tr><td><strong>Zustand</strong></td><td>5.x</td><td>Nuestra "memoria global". Guarda si el usuario inició sesión, su progreso, etc.</td></tr>
+                            <tr><td><strong>TanStack Query & Axios</strong></td><td>5.x / 1.x</td><td>Los "mensajeros" para pedir datos a nuestro backend. Manejan la caché.</td></tr>
+                            <tr><td><strong>i18next</strong></td><td>26.x</td><td>El traductor automático de la app para soportar múltiples idiomas.</td></tr>
+                            <tr><td><strong>RevenueCat</strong></td><td>Expo IAP</td><td>Gestor de cobros para las suscripciones premium dentro de la app.</td></tr>
+                            <tr><td><strong>Google & Apple Auth</strong></td><td>16.x / 8.x</td><td>Librerías para permitir el inicio de sesión con redes sociales.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📁 Mapa del Proyecto (Dónde está cada cosa)</h2>
+                <p>Así está organizado nuestro código. Cuando busques una pantalla o función, revisa este árbol:</p>
+<pre>temotiva-app/
+├── app/                    <span class="comment"># Pantallas principales (Expo Router)</span>
+│   ├── (auth)/             <span class="comment"># Pantallas sin iniciar sesión</span>
+│   │   ├── login.tsx, registro.tsx, forgot-password.tsx, goal-selection.tsx
+│   ├── (tabs)/             <span class="comment"># Menú inferior (Usuario logueado)</span>
+│   │   ├── home.tsx, practices.tsx, progress.tsx, mochila.tsx, profile.tsx
+│   │   └── sendero/[metaId].tsx
+│   ├── emergency.tsx       <span class="comment"># Pantalla roja de emergencia</span>
+│   ├── sos-flow.tsx        <span class="comment"># Flujo SOS guiado</span>
+│   ├── bonfire.tsx         <span class="comment"># Ejercicio de relajación (Fogata)</span>
+│   ├── shake-screen.tsx    <span class="comment"># Detección de movimiento del celular</span>
+│   └── paywall.tsx         <span class="comment"># Pantalla de cobro/suscripción premium</span>
+├── src/                    <span class="comment"># El corazón del código</span>
+│   ├── features/           <span class="comment"># Lógica agrupada por módulos (auth, emergencias...)</span>
+│   ├── shared/
+│   │   ├── components/     <span class="comment"># Botones, inputs, modales reutilizables en toda la app</span>
+│   │   ├── hooks/          <span class="comment"># Custom hooks de React</span>
+│   │   ├── services/       <span class="comment"># Donde están los archivos de llamadas a la API (Axios)</span>
+│   │   ├── stores/         <span class="comment"># Estado global (Zustand)</span>
+│   │   └── i18n/           <span class="comment"># Archivos de traducciones de idiomas</span>
+│   └── theme/              <span class="comment"># Colores, tipografías y variables de diseño</span>
+└── assets/                 <span class="comment"># Imágenes, audios de meditación, íconos (archivos estáticos)</span></pre>
+            </div>
+
+            <div class="card">
+                <h2>🔑 El archivo Secreto (.env)</h2>
+                <p>La app necesita contraseñas (claves de Google, pagos) para funcionar. Por seguridad, <strong>estos datos nunca se suben a GitHub</strong>. Debes crear un archivo llamado <code class="inline">.env</code> en la raíz de tu proyecto.</p>
+                <p><em>Tip de Oro:</em> Si usas un celular Android físico para probar la app, tu celular no entenderá qué es <code>localhost</code>. Debes poner la dirección IP local de tu internet (ej. 192.168.1.100). En el simulador de iPhone sí funciona localhost.</p>
+<pre><span class="comment"># Crea el archivo .env y pega esto:</span>
+
+<span class="comment"># 1. API del Backend (Reemplaza con tu IP si usas Android físico)</span>
+EXPO_PUBLIC_API_URL=http://localhost:4000
+
+<span class="comment"># 2. Claves de Google (Pídelas a tu líder técnico)</span>
+EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID=...
+EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID=...
+EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID=...
+
+<span class="comment"># 3. Claves de Pagos (RevenueCat)</span>
+EXPO_PUBLIC_REVENUECAT_IOS_KEY=...
+EXPO_PUBLIC_REVENUECAT_ANDROID_KEY=...</pre>
+            </div>
+
+            <div class="card">
+                <h2>🛠️ Tu Kit de Herramientas</h2>
+                <p>Instala estos programas en tu computadora antes de empezar a programar:</p>
+                <ul>
+                    <li><strong>Node.js (v18 o v20 LTS):</strong> El motor base para ejecutar nuestro código.</li>
+                    <li><strong>Git:</strong> Para descargar y controlar las versiones del código.</li>
+                    <li><strong>Docker Desktop (v24+):</strong> Vital. Lo usamos para simular el servidor/backend de Temotiva en tu PC.</li>
+                    <li><strong>VS Code:</strong> Nuestro editor oficial.</li>
+                    <li><strong>Expo CLI & EAS CLI:</strong> Instálalos abriendo tu terminal y escribiendo: <code class="inline">npm install -g expo-cli eas-cli</code>.</li>
+                    <li><strong>Expo Go:</strong> Descarga esta app en tu celular personal para escanear el QR y ver tus cambios en vivo.</li>
+                    <li><strong>Postman / Insomnia (Opcional):</strong> Muy útil para probar que el backend funciona antes de conectarlo a la app.</li>
+                    <li><strong>Xcode / Android Studio (Opcional):</strong> Solo si prefieres usar emuladores en pantalla en lugar de tu teléfono real.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>🚀 Guía Paso a Paso: Tu primer día</h2>
+                <p>Sigue estas instrucciones al pie de la letra para arrancar la app en tu computadora:</p>
+                
+                <div class="step-box">
+                    <h4>Paso 1: Descarga el código y levanta el Backend (El Cerebro)</h4>
+                    <p>La app no sirve de nada sin el servidor que le da los datos. Haremos que tu PC simule el servidor usando Docker.</p>
+<pre><span class="comment"># 1. Abre tu terminal y clona el proyecto</span>
+git clone https://github.com/TEMOTIVA-REACT/Temotiva-React.git
+cd Temotiva-React
+
+<span class="comment"># 2. Cambia a la rama del servidor local</span>
+git checkout backend-dev
+
+<span class="comment"># 3. Enciende el servidor (Asegúrate que Docker Desktop esté abierto)</span>
+docker compose -f docker-compose.dev.yml up --build</pre>
+                </div>
+
+                <div class="step-box">
+                    <h4>Paso 2: Levanta la App Móvil (La Interfaz)</h4>
+                    <p>Abre <strong>otra pestaña nueva</strong> en tu terminal (no cierres la del paso 1 porque apagarías el servidor) y haz esto:</p>
+<pre><span class="comment"># 1. Cambia a la rama de desarrollo de la app</span>
+git checkout dev
+
+<span class="comment"># 2. Instala las librerías necesarias (solo se hace la primera vez)</span>
+npm install
+
+<span class="comment"># 3. (Asegúrate de haber creado tu archivo .env aquí)</span>
+
+<span class="comment"># 4. Inicia la aplicación</span>
+npx expo start</pre>
+                    <p>Verás un código QR en tu terminal. Escanéalo con <strong>Expo Go</strong> en tu celular. (Si usas emulador, presiona 'i' para iOS o 'a' para Android en la terminal).</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>🚨 No entres en pánico (Errores Comunes)</h2>
+                <p>Es normal que algo falle, a todos nos pasa. Revisa esta enciclopedia de errores antes de pedir ayuda:</p>
+                
+                <h3>Problemas con Git</h3>
+                <div class="error-block">
+                    <div class="error-header">Your branch is behind 'origin/dev' by X commits</div>
+                    <div class="error-body">
+                        Tu rama está desactualizada respecto al trabajo de tus compañeros. Baja los últimos cambios:
+                        <pre>git pull origin dev</pre>
+                    </div>
+                </div>
+                <div class="error-block">
+                    <div class="error-header">error: failed to push some refs</div>
+                    <div class="error-body">
+                        Alguien subió código nuevo a GitHub mientras tú programabas. Descárgalo y combínalo:
+                        <pre>git pull origin &lt;tu-rama&gt; --rebase
+git push origin &lt;tu-rama&gt;</pre>
+                    </div>
+                </div>
+
+                <h3>Problemas con el Servidor (Backend/Docker)</h3>
+                <div class="error-block">
+                    <div class="error-header">port is already allocated (puerto 4000 ocupado)</div>
+                    <div class="error-body">
+                        Ya tienes algo corriendo en el puerto del backend. Búscalo y mátalo:
+                        <pre>lsof -i :4000
+kill -9 &lt;PID&gt;
+docker compose up</pre>
+                    </div>
+                </div>
+                <div class="error-block">
+                    <div class="error-header">Cannot connect to the Docker daemon</div>
+                    <div class="error-body">
+                        Se te olvidó abrir la aplicación "Docker Desktop" en tu computadora. Ábrela y espera a que cargue.
+                    </div>
+                </div>
+                <div class="error-block">
+                    <div class="error-header">relation "tabla" does not exist</div>
+                    <div class="error-body">
+                        Tu base de datos está vacía. Necesitas correr las migraciones del backend:
+                        <pre>docker compose exec backend npm run migration:run</pre>
+                    </div>
+                </div>
+
+                <h3>Problemas con la App (Expo/React Native)</h3>
+                <div class="error-block">
+                    <div class="error-header">Network request failed / Cannot connect to API</div>
+                    <div class="error-body">
+                        <strong>¿Por qué pasa?</strong> Tu celular intenta buscar el backend en sí mismo (<code class="inline">localhost</code>) o Docker no ha terminado de encender.
+                        <br><br>
+                        <strong>Solución:</strong> Revisa que Docker diga "database system is ready". Si usas Android físico, cambia <code class="inline">localhost</code> por la IP de tu PC en el <code class="inline">.env</code> y reinicia con <code class="inline">npx expo start --clear</code>.
+                    </div>
+                </div>
+                <div class="error-block">
+                    <div class="error-header">Unable to resolve module ...</div>
+                    <div class="error-body">
+                        Módulo faltante o caché corrupta porque alguien instaló una librería nueva.
+                        <pre>rm -rf node_modules
+npm install
+npx expo start --clear</pre>
+                    </div>
+                </div>
+                <div class="error-block">
+                    <div class="error-header">Expo Go no escanea el QR</div>
+                    <div class="error-body">
+                        Tu PC y tu celular deben estar conectados al mismo Wi-Fi. Si sigue fallando, en la terminal de Expo presiona la tecla 's' para cambiar al modo Tunnel.
+                    </div>
+                </div>
+                <div class="error-block">
+                    <div class="error-header">Apple Authentication failed</div>
+                    <div class="error-body">
+                        El inicio de sesión de Apple bloquea simuladores sin cuenta configurada. Para pruebas rápidas de desarrollo, usa siempre Google Sign-In.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= MÓDULO WEB ================= -->
+        <section id="web" class="module-content hidden">
+            <h1>DESARROLLO WEB</h1>
+
+            <div class="card">
+                <h2>🌐 Repositorio y Ramas (Web)</h2>
+                <p>Bienvenido al equipo Web. Aquí desarrollamos la plataforma web y landing pages de Temotiva usando <strong>Next.js</strong>. Todo el código vive en nuestro GitHub:</p>
+                
+                <a href="https://github.com/gmusterova-lgtm/Temotiva/tree/react-main" target="_blank" class="repo-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+                    Ir al Repositorio Web
+                </a>
+
+                <p><strong>¿Cómo nos organizamos? (Las Ramas)</strong><br>
+                Para mantener la web estable, trabajamos en copias (ramas):</p>
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>Rama</th><th>Para qué sirve</th><th>Regla de oro</th></tr></thead>
+                        <tbody>
+                            <tr><td><code class="inline">react-main</code></td><td>Es la web pública. ¡Cuidado! Todo lo que llegue aquí se sube a internet automáticamente al VPS.</td><td><span class="badge badge-auto">Deploy Automático</span></td></tr>
+                            <tr><td><code class="inline">react-develop</code></td><td>El espacio seguro donde juntamos y probamos el código de todo el equipo web.</td><td><span class="badge badge-dev">Saca tu copia desde aquí</span></td></tr>
+                            <tr><td><code class="inline">feature/*</code></td><td>Tu espacio personal para programar (Ej. <code class="inline">feature/pagina-talleres</code>).</td><td><span class="badge badge-dev">Rama de Trabajo</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📋 Reglas de Oro del Equipo</h2>
+                <p>El código web se sube automáticamente a los servidores. Un error tuyo tumba la página, así que seguimos estas reglas a rajatabla:</p>
+                <ul>
+                    <li><strong>Nunca hagas push directo</strong> a <code class="inline">react-main</code>. Siempre trabaja en tu rama y abre un Pull Request (PR) hacia <code class="inline">react-develop</code>.</li>
+                    <li><strong>Nombres de ramas:</strong> Usa prefijos claros como <code class="inline">feature/nombre-de-tarea</code> o <code class="inline">fix/nombre-del-error</code>.</li>
+                    <li><strong>Actualízate siempre:</strong> Antes de subir, haz <code class="inline">git pull origin react-develop</code> para asegurarte de no borrar el trabajo de los demás.</li>
+                    <li><strong>El Backend es compartido:</strong> El equipo móvil usa la misma base de datos. Si modificas algo en el backend, avisa al equipo de App.</li>
+                    <li><strong>Secretos protegidos:</strong> Nunca subas tu archivo <code class="inline">.env</code> a GitHub.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>⚙️ Stack Técnico (Las herramientas de código)</h2>
+                <p>Este es el ecosistema completo con el que da vida a la Web (Versión 1.0):</p>
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>Tecnología</th><th>Versión</th><th>¿En lenguaje humano, qué es?</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>Next.js (App Router)</strong></td><td>16.1.6</td><td>El motor principal. Crea webs súper rápidas que Google ama (buen SEO).</td></tr>
+                            <tr><td><strong>React & TypeScript</strong></td><td>v19 / v5</td><td>La interfaz visual y el código estricto para evitar errores tontos.</td></tr>
+                            <tr><td><strong>Tailwind CSS</strong></td><td>v4</td><td>Para diseñar rápido usando clases HTML (ej. <code class="inline">text-white p-4</code>).</td></tr>
+                            <tr><td><strong>Stripe SDK</strong></td><td>v5</td><td>Nuestra caja registradora para procesar pagos y suscripciones seguras.</td></tr>
+                            <tr><td><strong>Google Gemini</strong></td><td>0.24</td><td>El motor de Inteligencia Artificial que da vida a nuestro Chatbot.</td></tr>
+                            <tr><td><strong>Beehiiv API</strong></td><td>v2</td><td>El gestor para capturar emails y enviar nuestra Newsletter.</td></tr>
+                            <tr><td><strong>Cloudflare Turnstile</strong></td><td>—</td><td>Nuestro CAPTCHA invisible para evitar que los bots nos llenen de spam.</td></tr>
+                            <tr><td><strong>Framer Motion</strong></td><td>12.x</td><td>Nos ayuda a crear animaciones suaves y fluidas en la interfaz.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📁 Mapa del Proyecto (Dónde está cada cosa)</h2>
+                <p>Así está organizado nuestro código fuente. Úsalo como brújula:</p>
+<pre>react-main/
+├── app/                    <span class="comment"># Todas las páginas web y rutas</span>
+│   ├── admin/              <span class="comment"># Panel de administración interno</span>
+│   ├── ai/chat/            <span class="comment"># Interfaz del Chatbot con Gemini</span>
+│   ├── api/                <span class="comment"># API Routes (El "micro-backend" seguro de Next.js)</span>
+│   │   ├── chat/           <span class="comment"># Endpoint seguro para el chatbot</span>
+│   │   ├── newsletter/     <span class="comment"># Ruta segura para suscribirse a Beehiiv</span>
+│   │   └── privacy-proxy/  <span class="comment"># Proxy de privacidad de datos</span>
+│   ├── blog/[slug]/        <span class="comment"># Plantilla dinámica para los artículos del blog</span>
+│   ├── login/ register/    <span class="comment"># Pantallas de autenticación</span>
+│   ├── pago/               <span class="comment"># Flujo de pasarela de pago (Stripe)</span>
+│   ├── talleres/           <span class="comment"># Sección informativa de talleres</span>
+│   └── components/         <span class="comment"># Componentes visuales reutilizables (Navbars, Cards...)</span>
+├── lib/                    <span class="comment"># Funciones y configuraciones maestras</span>
+│   ├── AuthContext.tsx     <span class="comment"># Contexto global para saber si el usuario inició sesión</span>
+│   ├── api.ts              <span class="comment"># Funciones centrales para hablar con el Backend (Docker)</span>
+│   └── types.ts            <span class="comment"># Tipos estrictos de TypeScript</span>
+└── public/                 <span class="comment"># Imágenes, logos y archivos descargables</span></pre>
+            </div>
+
+            <div class="card">
+                <h2>🔑 El archivo Secreto (.env)</h2>
+                <p>La web maneja correos, IA y dinero. <strong>Estos datos JAMÁS se suben a GitHub</strong>. Crea manualmente un archivo <code class="inline">.env</code> en la carpeta de tu proyecto. Pídele las claves reales a tu Project Manager.</p>
+<pre><span class="comment"># ----- API Y BASE DE DATOS -----</span>
+NEXT_PUBLIC_API_URL=http://localhost:4000/api
+FRONTEND_URL=http://localhost:3000
+DB_PASSWORD=cambia_esto
+
+<span class="comment"># ----- SEGURIDAD (JWT) -----</span>
+JWT_SECRET=secreto-jwt
+JWT_REFRESH_SECRET=secreto-jwt-refresh
+
+<span class="comment"># ----- PAGOS (Stripe) -----</span>
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+
+<span class="comment"># ----- INTELIGENCIA ARTIFICIAL -----</span>
+GEMINI_API_KEY=tu_api_key
+GEMINI_MODEL=gemini-3.1-flash-lite-preview
+
+<span class="comment"># ----- TERCEROS (Emails, Spam, Newsletter) -----</span>
+BEEHIIV_API_KEY=tu_api_key
+BEEHIIV_PUBLICATION_ID=tu_publication_id
+NEXT_PUBLIC_TURNSTILE_SITE_KEY=tu_site_key
+TURNSTILE_SECRET_KEY=tu_secret_key
+
+<span class="comment"># ----- SMTP CORREOS DEL SISTEMA -----</span>
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=tu@gmail.com
+SMTP_PASS=contraseña-de-app
+ADMIN_EMAIL=admin@temotiva.com</pre>
+            </div>
+
+            <div class="card">
+                <h2>🛠️ Tu Kit de Herramientas</h2>
+                <p>Instala esto en tu computadora para poder correr el proyecto:</p>
+                <ul>
+                    <li><strong>Node.js (v18 o v20 LTS):</strong> Indispensable para ejecutar el entorno de Next.js.</li>
+                    <li><strong>Git:</strong> Para descargar y sincronizar el código del equipo.</li>
+                    <li><strong>Docker Desktop (v24+):</strong> ⚠️ Súper importante. Simula el servidor/backend central que comparten la Web y la App.</li>
+                    <li><strong>VS Code:</strong> El editor de código del equipo.</li>
+                    <li><strong>React DevTools (Extensión de navegador):</strong> Te ayudará a depurar el estado de los componentes visuales.</li>
+                    <li><strong>Postman / Insomnia:</strong> Ideal para revisar los datos puros del backend.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>🚀 Guía Paso a Paso: Arrancando la Web</h2>
+                <p>Sigue estos pasos precisos para que tu primera instalación sea exitosa:</p>
+                
+                <div class="step-box">
+                    <h4>Paso 1: Levanta el "Cerebro" (El Backend en Docker)</h4>
+                    <p>La web y la app comparten base de datos. Para ver datos reales, primero debes clonar el <strong>repositorio de la App</strong> (sí, leíste bien) y encender el backend.</p>
+<pre><span class="comment"># 1. En tu terminal clona el repo de la app</span>
+git clone https://github.com/TEMOTIVA-REACT/Temotiva-React.git
+cd Temotiva-React
+
+<span class="comment"># 2. Cámbiate a la rama del servidor local</span>
+git checkout backend-dev
+
+<span class="comment"># 3. Enciende el servidor (Asegúrate de tener Docker Desktop abierto)</span>
+docker compose -f docker-compose.dev.yml up --build</pre>
+                </div>
+
+                <div class="step-box">
+                    <h4>Paso 2: Levanta el sitio Web localmente</h4>
+                    <p>Ahora sí, abre <strong>otra pestaña en la terminal</strong> (para no apagar el Docker) y prepara el código web.</p>
+<pre><span class="comment"># 1. Clona el repositorio web y entra a la carpeta</span>
+git clone https://github.com/gmusterova-lgtm/Temotiva.git
+cd Temotiva
+
+<span class="comment"># 2. ¡Importante! Cambia a la rama de desarrollo</span>
+git checkout react-develop
+
+<span class="comment"># 3. Instala las librerías e inicia la web</span>
+npm install
+<span class="comment"># (Asegúrate de haber creado tu archivo .env)</span>
+npm run dev</pre>
+                    <p>Abre tu navegador y entra a <strong>http://localhost:3000</strong>. ¡La plataforma ya está viva!</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>🚨 No entres en pánico (Errores Comunes)</h2>
+                <p>Al empezar siempre hay pequeños obstáculos. Busca tu error aquí antes de reportarlo:</p>
+
+                <h3>Problemas con Git</h3>
+                <div class="error-block">
+                    <div class="error-header">Your branch is behind / error: failed to push</div>
+                    <div class="error-body">
+                        Alguien subió código a la rama principal. Descarga esos cambios antes de intentar subir los tuyos:
+                        <pre>git pull origin react-develop --rebase</pre>
+                    </div>
+                </div>
+
+                <h3>Problemas con el Servidor (Backend/Docker)</h3>
+                <div class="error-block">
+                    <div class="error-header">port is already allocated (puerto 4000 ocupado)</div>
+                    <div class="error-body">
+                        Hay un proceso escondido usando el puerto del backend.
+                        <pre>kill -9 $(lsof -t -i:4000)
+docker compose up</pre>
+                    </div>
+                </div>
+                <div class="error-block">
+                    <div class="error-header">Cannot connect to the Docker daemon / ERROR: Build failed</div>
+                    <div class="error-body">
+                        Asegúrate de tener la aplicación Docker Desktop abierta. Si el error es de "Build", borra el caché: <code class="inline">docker compose build --no-cache</code>
+                    </div>
+                </div>
+                <div class="error-block">
+                    <div class="error-header">relation "tabla" does not exist</div>
+                    <div class="error-body">
+                        Tu base de datos está vacía. Debes poblarla corriendo las migraciones:
+                        <pre>docker compose exec backend npm run migration:run</pre>
+                    </div>
+                </div>
+
+                <h3>Problemas con la Web (Next.js)</h3>
+                <div class="error-block">
+                    <div class="error-header">EADDRINUSE: address already in use :::3000</div>
+                    <div class="error-body">
+                        Tienes otra pestaña, proyecto o terminal usando el puerto 3000. Libéralo:
+                        <pre>kill -9 $(lsof -t -i:3000)
+npm run dev</pre>
+                    </div>
+                </div>
+                <div class="error-block">
+                    <div class="error-header">Module not found: Can't resolve '...'</div>
+                    <div class="error-body">
+                        Faltan dependencias o se rompió la memoria caché de Next.js.
+                        <pre>rm -rf node_modules .next
+npm install
+npm run dev</pre>
+                    </div>
+                </div>
+                <div class="error-block">
+                    <div class="error-header">NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is not defined</div>
+                    <div class="error-body">
+                        Agregaste el archivo <code class="inline">.env</code> mientras la web ya estaba corriendo. El sistema no lee variables nuevas en vivo. Presiona <kbd>Ctrl</kbd>+<kbd>C</kbd> y vuelve a escribir <code class="inline">npm run dev</code>.
+                    </div>
+                </div>
+                <div class="error-block">
+                    <div class="error-header">Failed to fetch / Cannot connect to API</div>
+                    <div class="error-body">
+                        El servidor Docker (Paso 1) está apagado. Verifica que <code class="inline">NEXT_PUBLIC_API_URL</code> sea exactamente <code class="inline">http://localhost:4000/api</code>.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PLACEHOLDER RESTO DE MÓDULOS ================= -->
+        <section id="placeholder" class="module-content hidden">
+            <div class="empty-state">
+                <div id="ph-icon" class="empty-icon">🚧</div>
+                <h2 id="ph-title">Módulo en construcción</h2>
+                <p id="ph-desc">Estamos preparando toda la documentación, guías y procesos para esta área. Estará disponible muy pronto.</p>
+                <button class="btn-return" onclick="showModule('general')">Volver a General</button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Data for dynamic empty states based on module
+        const moduleData = {
+            'diseno': { title: 'Diseño y UI/UX', icon: '🎨', desc: 'Sistemas de diseño, recursos gráficos, componentes visuales y lineamientos de marca.' },
+            'ciberseguridad': { title: 'Ciberseguridad', icon: '🛡️', desc: 'Protocolos de seguridad, privacidad de datos de usuarios y protección de la plataforma.' },
+            'psicologia': { title: 'Psicología', icon: '🧠', desc: 'Bases clínicas, metodologías de bienestar y validación de nuestros procesos emocionales.' },
+            'finanzas': { title: 'Finanzas', icon: '📊', desc: 'Modelos de negocio, presupuestos, proyecciones y reportes financieros internos.' },
+            'legal': { title: 'Área Legal', icon: '⚖️', desc: 'Términos, condiciones, privacidad, contratos y cumplimiento normativo.' },
+            'marketing': { title: 'Marketing', icon: '🚀', desc: 'Estrategias de crecimiento, campañas, gestión de redes sociales y branding.' },
+            'producto': { title: 'Producto', icon: '📦', desc: 'Roadmap, historias de usuario, analíticas y la visión general a futuro de Temotiva.' },
+            'inversiones': { title: 'Inversiones', icon: '📈', desc: 'Pitch decks, cap table, métricas clave y relación con nuestros inversores.' },
+            'practicas': { title: 'Prácticas', icon: '🎓', desc: 'Guía específica, mentorías y recursos para estudiantes en periodo de prácticas.' }
+        };
+
+        function showModule(moduleId) {
+            const generalSection = document.getElementById('general');
+            const appSection = document.getElementById('app');
+            const webSection = document.getElementById('web');
+            const placeholderSection = document.getElementById('placeholder');
+            
+            // Update navigation active state
+            const dockItems = document.querySelectorAll('.dock-item');
+            dockItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('onclick').includes(moduleId)) {
+                    item.classList.add('active');
+                }
+            });
+
+            // Re-trigger animation by resetting the elements
+            [generalSection, appSection, webSection, placeholderSection].forEach(el => {
+                if(el) {
+                    el.style.animation = 'none';
+                    el.offsetHeight; // trigger reflow
+                    el.style.animation = null;
+                }
+            });
+
+            // Hide all sections first
+            generalSection.classList.add('hidden');
+            appSection.classList.add('hidden');
+            webSection.classList.add('hidden');
+            placeholderSection.classList.add('hidden');
+
+            // Show appropriate section
+            if (moduleId === 'general') {
+                generalSection.classList.remove('hidden');
+            } else if (moduleId === 'app') {
+                appSection.classList.remove('hidden');
+            } else if (moduleId === 'web') {
+                webSection.classList.remove('hidden');
+            } else {
+                placeholderSection.classList.remove('hidden');
+                
+                // Dynamically update placeholder content
+                const data = moduleData[moduleId] || { title: 'Próximamente', icon: '🚧', desc: 'La documentación para este módulo estará disponible pronto.' };
+                
+                document.getElementById('ph-icon').innerText = data.icon;
+                document.getElementById('ph-title').innerText = data.title;
+                document.getElementById('ph-desc').innerText = data.desc;
+            }
+            
+            // Smooth scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Ensure first item is active on load
+        document.addEventListener('DOMContentLoaded', () => {
+            showModule('general');
+        });
+    </script>
+</body>
+</html>
